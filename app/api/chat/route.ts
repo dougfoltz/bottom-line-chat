@@ -53,13 +53,13 @@ export async function POST(req: Request) {
   }
 
   const completion = await client.chat.completions.create({
-    model: 'gpt-4o-mini',
-    temperature: 0.7,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: messages?.[messages.length - 1]?.content || '' }
-    ]
-  })
+  model: 'gpt-4o-mini',
+  temperature: 0.7,
+  messages: [
+    { role: 'system', content: systemPrompt },
+    ...messages.filter((m: any) => m.role === 'user' || m.role === 'assistant')
+  ]
+})
 
   const content = completion.choices?.[0]?.message?.content || "Sorry, I couldn't generate options just now."
   return NextResponse.json({ role: 'assistant', content })
